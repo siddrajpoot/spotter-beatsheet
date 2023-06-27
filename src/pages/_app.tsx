@@ -17,20 +17,17 @@ const MyApp: AppType = ({ Component, pageProps }) => {
           name='viewport'
           content='minimum-scale=1, initial-scale=1, width=device-width'
         />
-        {/* <style jsx global>{`
-          html {
-            font-family: ${inter.style.fontFamily};
-          }
-        `}</style> */}
       </Head>
 
       <MantineProvider
+        withCSSVariables
         withGlobalStyles
         withNormalizeCSS
         theme={{
           /** Put your mantine theme override here */
           colorScheme: 'dark',
           fontFamily: inter.style.fontFamily,
+          primaryColor: 'violet',
         }}
       >
         <Component {...pageProps} />

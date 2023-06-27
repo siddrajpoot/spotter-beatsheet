@@ -1,9 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import useSWR from 'swr'
 
-const BASE_API_URL = 'http://localhost:8080'
+export const BASE_API_URL = 'http://localhost:8080'
 
-async function fetcher<JSON>(
+export async function fetcher<JSON>(
   input: RequestInfo,
   init?: RequestInit
 ): Promise<JSON> {
@@ -13,7 +13,11 @@ async function fetcher<JSON>(
     throw new Error('Network error')
   }
 
-  return res.json() as Promise<JSON>
+  const isJSON = res.headers.get('content-type')?.includes('application/json')
+
+  // const data = isJson && (await response.json())
+
+  return isJSON ? (res.json() as Promise<JSON>) : (res.text() as Promise<JSON>)
 }
 
 export function useFetch<T>(key: string) {
