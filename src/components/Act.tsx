@@ -7,7 +7,9 @@ import {
   ActionIcon,
   Container,
   Divider,
+  Group,
   SimpleGrid,
+  Skeleton,
   Text,
   Transition,
   em,
@@ -26,7 +28,9 @@ const Act = ({ act }: { act: ActType }) => {
 
   const { toggleModal, setSelectedAct } = useStore()
   const [showActions, setShowActions] = useState(false)
-  const { data: beatData } = useFetch<BeatType[]>(`/acts/${act.id}/beats`)
+  const { data: beatData, isLoading } = useFetch<BeatType[]>(
+    `/acts/${act.id}/beats`
+  )
 
   const handleDeleteClick = () => {
     toggleModal('DELETE_ACT')
@@ -72,21 +76,29 @@ const Act = ({ act }: { act: ActType }) => {
           )}
         </Transition>
       </div>
-      <Container fluid p={0} mb='3rem'>
-        <SimpleGrid cols={isLargeScreen ? 4 : 2} spacing='lg'>
-          {beatData?.length
-            ? beatData.map(beat => <Beat act={act} beat={beat} key={beat.id} />)
-            : null}
-          <div className={styles.beatCardContainer}>
-            <div className={styles.newBeat} onClick={handleNewBeatClick}>
-              <FiPlus opacity='0.1' fontSize='6rem' />
+      {isLoading && (
+        <Group mb='lg' grow>
+          <Skeleton height={200} radius='md' />
+          <Skeleton height={200} radius='md' />
+        </Group>
+      )}
+      {Boolean(beatData?.length) && (
+        <Container fluid p={0} mb='3rem'>
+          <SimpleGrid cols={isLargeScreen ? 4 : 2} spacing='lg'>
+            {beatData?.map(beat => (
+              <Beat act={act} beat={beat} key={beat.id} />
+            ))}
+            <div className={styles.beatCardContainer}>
+              <div className={styles.newBeat} onClick={handleNewBeatClick}>
+                <FiPlus opacity='0.1' fontSize='6rem' />
+              </div>
+              <Text color='dimmed' align='center'>
+                New Beat
+              </Text>
             </div>
-            <Text color='dimmed' align='center'>
-              New Beat
-            </Text>
-          </div>
-        </SimpleGrid>
-      </Container>
+          </SimpleGrid>
+        </Container>
+      )}
     </div>
   )
 }
